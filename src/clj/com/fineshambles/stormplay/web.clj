@@ -1,25 +1,23 @@
 (ns com.fineshambles.stormplay.web
-  (:use compojure.core)
+  (:use compojure.core hiccup.core)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [ring.adapter.jetty :as jetty]
-            [clojure.pprint :as pprint])
+            [ring.adapter.jetty :as jetty])
   (:import (com.fineshambles.stormplay DefinitionsRepository)))
 
 (defn decorate [body]
-  (str "<html><head></head><body>"
-       body
-       "</body></html>"))
+  (str (html [:head [:body body]])))
 
 
 (defn index-page []
   (let [words (. DefinitionsRepository getWords)
-        word-lis (map (fn [w] (str "<li><a href=\"/words/" w "\">" w "</a></li>\n")) words)]
-    (decorate (str "<ul>" (apply str word-lis) "</ul>"))))
+        word-lis (map (fn [w] [:li [:a {:href (str "/words/" w)} w]]) words)]
+    (decorate [:ul word-lis])))
 
 (defn word-page [{{w :word} :params}]
  (let [defns (. DefinitionsRepository get w)]
-      (decorate (reduce (fn [a b] (str a "<br />\n" b))
+      (decorate (reduce (fn [a b] (concat a [b [:br]]))
+                        []
                         defns))))
 
 (defroutes app-routes

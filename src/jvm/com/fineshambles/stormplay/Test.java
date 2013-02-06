@@ -16,14 +16,12 @@ import backtype.storm.utils.Utils;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
+import clojure.lang.Compiler;
 
-import com.sun.jersey.api.container.grizzly.GrizzlyServerFactory;
-import com.sun.jersey.api.core.PackagesResourceConfig;
-import com.sun.jersey.api.core.ResourceConfig;
 
 /**
  * This is a basic example of a Storm topology.
@@ -57,27 +55,8 @@ public class Test {
             cluster.killTopology("test");
             cluster.shutdown();
             
-            startWebServer();
+            Compiler.load(new StringReader("(ns user (:require [com.fineshambles.stormplay.web :as web])) (web/start)"));
         }
     }
 
-	private static void startWebServer() {
-		
-		ResourceConfig rc = new PackagesResourceConfig("com.fineshambles.stormplay.resources");
-		URI BASE_URI = UriBuilder.fromUri("http://localhost/").port(9995).build();
-		try {
-			GrizzlyServerFactory.create(BASE_URI, rc).listen();
-			Utils.sleep(60000);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }

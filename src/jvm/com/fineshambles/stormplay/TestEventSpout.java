@@ -13,7 +13,7 @@ public class TestEventSpout extends BaseRichSpout {
 
 	private SpoutOutputCollector collector;
 	private int count = 0;
-	private int maxCount = 100;
+	private int maxCount = 3;
 	private String[] words = new String[] { "Dog", "Cat", "Mouse", "Tiger" };
 	private String[] attributes = new String[] { "fierce", "petite", "monstrous", "adorable" };
 	private String[] analogies = new String[] { "dragon", "unicorn", "centaur", "phoenix" };

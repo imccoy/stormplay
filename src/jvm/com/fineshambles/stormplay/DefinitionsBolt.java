@@ -1,11 +1,12 @@
 package com.fineshambles.stormplay;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.mortbay.log.Log;
+import org.apache.log4j.Logger;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.OutputCollector;
@@ -33,13 +34,15 @@ public class DefinitionsBolt extends BaseRichBolt {
 	@Override
 	public void execute(Tuple input) {
 		String word = input.getString(0);
-		Log.debug("BEFORE");
-		Log.debug("type " + input.getValue(1).getClass().toString());
 		@SuppressWarnings("unchecked")
 		List<String> newDefinitions = (List<String>)input.getValue(1);
-		Log.debug("AFTER");
 		
-		map.putIfAbsent(word, new ArrayList<String>());
+		try {
+			initWordEntry(word);
+		} catch (IOException e) {
+			Logger.getLogger(this.getClass()).error("Couldn't load word " + word, e);
+			return;
+		}
 		List<String> definitions = map.get(word);
 		List<String> definitionsOut = new ArrayList<String>();
 		synchronized (definitions) {
@@ -55,6 +58,12 @@ public class DefinitionsBolt extends BaseRichBolt {
 		tuple.add(definitionsOut);
 		collector.emit(tuple);
 		collector.ack(input);
+	}
+
+	private void initWordEntry(String word) throws IOException {
+		if (map.containsKey(word))
+			return;
+		map.putIfAbsent(word, DefinitionsRepository.get(word));
 	}
 
 	@Override

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+option java_package = "com.fineshambles.stormplay";
+option java_outer_classname = "WordProtos";
+
+message Word {
+	required string Word = 1;
+	repeated string Definitions = 2;
+}

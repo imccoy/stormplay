@@ -6,7 +6,7 @@
   (:import (com.fineshambles.stormplay DefinitionsRepository)))
 
 (defn decorate [body]
-  (str (html [:head [:body body]])))
+  (html [:head [:body body]]))
 
 
 (defn index-page []

@@ -3,7 +3,8 @@
                  [com.basho.riak/riak-client "1.0.6"]
                  [com.google.protobuf/protobuf-java "2.4.1"]
                  [compojure "1.1.5"]
-                 [hiccup "1.0.2"]]
+                 [hiccup "1.0.2"]
+                 [org.codehaus.jackson/jackson-core-asl "1.9.4"]]
   :source-paths ["src/clj"]
   :profiles {:dev
              {:dependencies
